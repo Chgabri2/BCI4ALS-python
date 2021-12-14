@@ -40,13 +40,18 @@ def show_stimulus(win, stim):
 
 def create_board():
     params = BrainFlowInputParams()
+    params.ip_port = 6677
+    params.serial_port = "COM4"
+    params.headset = 'avi13'
+    params.board_id = BOARD_ID
+
     board = BoardShim(BOARD_ID, params)
     board.prepare_session()
     return board
 
 
 def convert_to_mne(recording):
-    recording[EEG_CHANNELS] = recording[MARKER_CHANNEL] / 1e6  # BrainFlow returns uV, convert to V for MNE
+    recording[EEG_CHANNELS] = recording[EEG_CHANNELS] / 1e6  # BrainFlow returns uV, convert to V for MNE
     data = recording[EEG_CHANNELS + [MARKER_CHANNEL]]
     ch_types = (['eeg'] * len(EEG_CHANNELS)) + ['stim']
     ch_names = EEG_CHAN_NAMES + [EVENT_CHAN_NAME]
