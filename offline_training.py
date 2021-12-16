@@ -27,10 +27,11 @@ def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1):
 
     # stop recording
     raw = convert_to_mne(board.get_board_data())
+    board_data = board.get_board_data()
     board.stop_stream()
     board.release_session()
 
-    return raw
+    return raw, board_data
 
 
 def show_stimulus(win, stim):
@@ -41,7 +42,7 @@ def show_stimulus(win, stim):
 def create_board():
     params = BrainFlowInputParams()
     params.ip_port = 6677
-    params.serial_port = "COM4"
+    params.serial_port = "COM8"
     params.headset = 'avi13'
     params.board_id = BOARD_ID
 
