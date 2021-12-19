@@ -7,12 +7,11 @@ import mne
 import offline_training
 import pandas as pd
 
-
 def main():
     subj = input("Enter Subject Name: ")
     params = {
-        'trial_duration': 5,
-        'trials_per_stim': 8,
+        'trial_duration': 4,
+        'trials_per_stim': 10,
         'trial_gap': 2,
     }
     raw, board_data = offline_training.run_session(**params)
