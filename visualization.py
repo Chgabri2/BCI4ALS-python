@@ -4,29 +4,54 @@ import mne
 from constants import *
 from matplotlib import pyplot as plt
 import pandas as pd
+from datetime import datetime
+from pathlib import Path
+from Marker import Marker
+from constants import *
+import offline_training
 
-raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-19--09-56-23_0088\\raw.fif", preload=True)
-epochs = mne.read_epochs(RECORDINGS_DIR +"\\2021-12-19--09-56-23_0088\\-epo.fif", preload=True)
-#raw.plot_psd(fmax=50)
-#plt.show(block=False)
-raw.filter(1,30)
+params = {
+    'trial_duration': 4,
+    'trials_per_stim': 10,
+    'trial_gap': 2,
+}
+
+def get_epochs(raw, trial_duration):
+    events = mne.find_events(raw, EVENT_CHAN_NAME)
+    # TODO: add proper baseline
+    epochs = mne.Epochs(raw, events, Marker.all(), 0, trial_duration, picks="data", baseline=(0, 0))
+    return epochs
+
+# read files
+raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-19--10-05-18_0088\\raw.fif", preload=True)
+
+# high pass low pass
+raw.filter(1, 30)
 raw.plot(duration=150, n_channels=13, block=True)
+raw.plot_psd(fmax=50)
 
 plt.show()
 
-###
-
-
+#
+psd_multi = mne.time_frequency.psd_multitaper(raw, 1,30)
 raw = raw.pick_types(meg=False, eeg=True, eog=True, ecg=True, stim=True,
                      exclude=raw.info['bads']).load_data()
-events = mne.find_events(raw)
+
+# eeg_reference and digitization
 raw.set_eeg_reference(projection=True).apply_proj()
 
+ten_twenty_montage = mne.channels.make_standard_montage('standard_1020')
+raw.set_montage(ten_twenty_montage)
+raw_csd = mne.preprocessing.compute_current_source_density(raw)
+raw.plot()
+raw_csd.plot()
 
+epochs = get_epochs(raw, params['trial_duration'])
 
-
-# ica = mne.preprocessing.ICA(n_components=13, random_state=97, max_iter=800)
-# ica.fit(rec)
-# ica.exclude = [1, 2]  # details on how we picked these are omitted here
-# ica.plot_properties(rec, picks=ica.exclude)
-
+# ICA process
+ica = mne.preprocessing.ICA(n_components=13, random_state=97, max_iter=800)
+ica.fit(raw)
+ica.exclude = [3, 4]  # details on how we picked these are omitted here
+ica.plot_properties(raw, picks=ica.exclude)
+epochs.plot_psd()
+epochs.plot_psd_topomap()
