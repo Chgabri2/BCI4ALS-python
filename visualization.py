@@ -10,48 +10,23 @@ from Marker import Marker
 from constants import *
 import offline_training
 
-params = {
-    'trial_duration': 4,
-    'trials_per_stim': 10,
-    'trial_gap': 2,
-}
-
-def get_epochs(raw, trial_duration):
-    events = mne.find_events(raw, EVENT_CHAN_NAME)
-    # TODO: add proper baseline
-    epochs = mne.Epochs(raw, events, Marker.all(), 0, trial_duration, picks="data", baseline=(0, 0))
-    return epochs
-
 # read files
-raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-19--10-05-18_0088\\raw.fif", preload=True)
+raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-21--14-06-17_0099\\raw.fif", preload=True)
+raw_csd = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-21--14-06-17_0099\\raw_csd.fif", preload=True)
+epochs = mne.read_epochs(RECORDINGS_DIR +"\\2021-12-21--14-06-17_0099\\-epo.fif", preload=True)
+
 
 # high pass low pass
-raw.filter(1, 30)
-raw.plot(duration=150, n_channels=13, block=True)
-raw.plot_psd(fmax=50)
-
-plt.show()
-
-#
-psd_multi = mne.time_frequency.psd_multitaper(raw, 1,30)
-raw = raw.pick_types(meg=False, eeg=True, eog=True, ecg=True, stim=True,
-                     exclude=raw.info['bads']).load_data()
-
-# eeg_reference and digitization
-raw.set_eeg_reference(projection=True).apply_proj()
-
-ten_twenty_montage = mne.channels.make_standard_montage('standard_1020')
-raw.set_montage(ten_twenty_montage)
-raw_csd = mne.preprocessing.compute_current_source_density(raw)
-raw.plot()
+#raw.plot(duration=150, n_channels=13, block=True)
+raw_csd.plot_psd(fmax=50)
 raw_csd.plot()
 
-epochs = get_epochs(raw, params['trial_duration'])
+epochs.plot_psd()
+epochs.plot_psd_topomap()
+
 
 # ICA process
 ica = mne.preprocessing.ICA(n_components=13, random_state=97, max_iter=800)
-ica.fit(raw)
+ica.fit(raw_csd)
 ica.exclude = [3, 4]  # details on how we picked these are omitted here
-ica.plot_properties(raw, picks=ica.exclude)
-epochs.plot_psd()
-epochs.plot_psd_topomap()
+ica.plot_properties(raw_csd, picks=ica.exclude)
