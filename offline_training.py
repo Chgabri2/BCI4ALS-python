@@ -42,7 +42,7 @@ def show_stimulus(win, stim):
 def create_board():
     params = BrainFlowInputParams()
     params.ip_port = 6677
-    params.serial_port = "COM8"
+    params.serial_port = SERIAL_PORT
     params.headset = 'avi13'
     params.board_id = BOARD_ID
 

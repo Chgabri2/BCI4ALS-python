@@ -12,7 +12,7 @@ import offline_training
 
 params = {
     'trial_duration': 4,
-    'trials_per_stim': 10,
+    'trials_per_stim': 16,
     'trial_gap': 2,
 }
 
@@ -23,7 +23,8 @@ def get_epochs(raw, trial_duration):
     return epochs
 
 # read files
-raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-19--10-05-18_0088\\raw.fif", preload=True)
+raw = mne.io.read_raw_fif(RECORDINGS_DIR +"/2021-12-26--11-07-27_ori3/raw.fif", preload=True) #for mac
+# raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-26--10-40-04_ori1\\raw.fif", preload=True) #for windows
 
 # high pass low pass
 raw.filter(1, 30)
