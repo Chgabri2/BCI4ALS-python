@@ -10,7 +10,7 @@ import pandas as pd
 def get_epochs(raw, trial_duration):
     events = mne.find_events(raw, EVENT_CHAN_NAME)
     # TODO: add proper baseline
-    epochs = mne.Epochs(raw, events, Marker.all(), 0, trial_duration, picks="data", baseline=(0, 0))
+    epochs = mne.Epochs(raw, events, Marker.all(), 0, trial_duration, picks="data", baseline=(0, 0), preload=True)
     return epochs
 
 def save_raw_and_epochs(subj, raw, filtered_recording, epochs, board_data):

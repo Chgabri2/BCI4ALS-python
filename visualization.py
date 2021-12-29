@@ -23,8 +23,8 @@ def get_epochs(raw, trial_duration):
     return epochs
 
 # read files
-raw = mne.io.read_raw_fif(RECORDINGS_DIR +"/2021-12-26--11-07-27_ori3/raw.fif", preload=True) #for mac
-# raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-26--10-40-04_ori1\\raw.fif", preload=True) #for windows
+#raw = mne.io.read_raw_fif(RECORDINGS_DIR +"/2021-12-26--11-07-27_ori3/raw.fif", preload=True) #for mac
+raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-26--10-40-04_ori1\\raw.fif", preload=True) #for windows
 
 # high pass low pass
 raw.filter(1, 30)
@@ -47,7 +47,7 @@ raw_csd = mne.preprocessing.compute_current_source_density(raw)
 raw.plot()
 raw_csd.plot()
 
-epochs = get_epochs(raw, params['trial_duration'])
+epochs = get_epochs(raw_csd, params['trial_duration'])
 
 # ICA process
 ica = mne.preprocessing.ICA(n_components=13, random_state=97, max_iter=800)
@@ -56,3 +56,9 @@ ica.exclude = [3, 4]  # details on how we picked these are omitted here
 ica.plot_properties(raw, picks=ica.exclude)
 epochs.plot_psd()
 epochs.plot_psd_topomap()
+
+# labels
+epochs['1'].plot_psd()
+plt.show()
+epochs['2'].plot_psd()
+

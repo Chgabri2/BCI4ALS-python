@@ -3,8 +3,8 @@ import serial.tools.list_ports
 
 BOARD_ID = BoardIds.CYTON_DAISY_BOARD #BoardIds.SYNTHETIC_BOARD#
 IMAGES_DIR = "./images"
-RECORDINGS_DIR = "/Users/ronifarkash/Documents/GitHub/BCI4ALS-python/recordings" # for roni
-# RECORDINGS_DIR = "./recordings" # for others
+#RECORDINGS_DIR = "/Users/ronifarkash/Documents/GitHub/BCI4ALS-python/recordings" # for roni
+RECORDINGS_DIR: str = "./recordings" # for others
 EVENT_CHAN_NAME = "Stim Markers"
 EEG_CHANNELS = BoardShim.get_eeg_channels(BOARD_ID)
 MARKER_CHANNEL = BoardShim.get_marker_channel(BOARD_ID)
@@ -12,6 +12,7 @@ FS = BoardShim.get_sampling_rate(BOARD_ID)
 EEG_CHAN_NAMES = BoardShim.get_eeg_names(BOARD_ID)
 SERIAL_PORT = "/dev/cu.usbserial-DM0258NB"  #for mac
 # SERIAL_PORT = "COM8"  #for widows
+FS = 125
 
 def find_serial_port():
     """
