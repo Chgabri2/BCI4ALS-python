@@ -13,6 +13,7 @@ import raw_data_analysis as rda
 from scipy.fft import fft, ifft
 from scipy import signal as sg
 import math
+import matlab.engine
 
 
 raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-26--11-07-27_ori3\\raw.fif", preload=True) #for windows
@@ -99,3 +100,12 @@ axs[1][1].set_title("Left C4")
 cax  = fig.add_axes([0.95, 0.15, 0.01, 0.7])
 fig.colorbar(im, cax=cax)
 plt.show()
+
+####
+elecs = [["C3"],["C4"]]
+right_data = epochR
+left_data = epochL
+classes = [["left"], ["right"]]
+eng = matlab.engine.start_matlab()
+eng.plot_spectrogram(matlab.double(left_data.tolist()), matlab.double(right_data.tolist()),
+                     elecs, matlab.double(freq.tolist()), float(window_size), float(overlap), FS, classes)
