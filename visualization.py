@@ -50,9 +50,9 @@ raw_csd.plot()
 epochs = get_epochs(raw_csd, params['trial_duration'])
 
 # ICA process
-ica = mne.preprocessing.ICA(n_components=13, random_state=97, max_iter=800)
+ica = mne.preprocessing.ICA(n_components=14, random_state=100, max_iter=1000)
 ica.fit(raw)
-ica.exclude = [3, 4]  # details on how we picked these are omitted here
+ica.exclude = [ica.ch_names.index('O1'), ica.ch_names.index('O2')]  # details on how we picked these are omitted here
 ica.plot_properties(raw, picks=ica.exclude)
 epochs.plot_psd()
 epochs.plot_psd_topomap()
