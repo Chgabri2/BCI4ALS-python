@@ -13,6 +13,7 @@ def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1):
 
     # start recording
     board = create_board()
+    board.config_board(HARDWARE_SETTINGS_MSG)
     board.start_stream()
 
     # display trials

@@ -41,7 +41,8 @@ def get_features(fname):
 # recordings = [RECORDINGS_DIR + "\\2021-12-26--11-07-27_ori3", RECORDINGS_DIR + "\\2021-12-26--10-57-01_ori2",
 #               RECORDINGS_DIR + "\\2021-12-26--10-40-04_ori1", RECORDINGS_DIR + "\\2021-12-21--13-59-03_0088"]
 
-recordings = [RECORDINGS_DIR + "\\2022-01-02--12-07-24_ori\\2022-01-02--12-07-24_ori212022", RECORDINGS_DIR + "\\2022-01-02--12-01-25_ori\\2022-01-02--12-01-25_ori212022"]
+recordings = [RECORDINGS_DIR + "\\2022-01-18--10-49-37_ori", RECORDINGS_DIR + "\\2022-01-18--11-03-29_ori", \
+              RECORDINGS_DIR + "\\2022-01-18--11-06-56_ori", RECORDINGS_DIR + "\\2022-01-18--11-06-56_ori" ]
 
 all_feature=np.array([])
 all_classes=np.array([])
@@ -63,7 +64,7 @@ cnfsn_mat_train = confusion_matrix(all_classes, pred)
 ConfusionMatrixDisplay(confusion_matrix(classes, pred)).plot()
 print("on train",classification_report(pred,all_classes))
 
-fname = RECORDINGS_DIR + "\\2021-12-26--11-07-27_ori3\\raw.fif"
+fname = RECORDINGS_DIR + "\\2022-01-18--11-14-32_ori\\raw.fif"
 features, classes= get_features(fname)
 pred=clf.predict(features)
 print("on test", classification_report(pred, classes))

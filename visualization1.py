@@ -10,7 +10,7 @@ from scipy import signal as sg
 import math
 import matlab.engine
 
-recordings = [RECORDINGS_DIR + "\\2022-01-02--12-07-24_ori\\2022-01-02--12-07-24_ori212022", RECORDINGS_DIR + "\\2022-01-02--12-01-25_ori\\2022-01-02--12-01-25_ori212022"]
+recordings = [RECORDINGS_DIR + "\\2022-01-18--11-11-00_ori"]
 stim_dur = 4
 epochR, epochL = rda.devide_to_labels(recordings, apply_ica = True)
 
@@ -32,7 +32,7 @@ def create_psd(epochR, epochL, FS, window_size, overlap, freq):
     welchRSTD = np.std(10*np.log10(len(welchR[0]) * welchR[1]), axis=0)
     welchLSTD = np.std(10*np.log10(len(welchR[0]) * welchL[1]), axis=0)
 
-    fig, axs = plt.subplots(1,2)
+    fig, axs = plt.subplots(1, 2)
     axs[0].plot(welchR[0], welchRmean[0])
     axs[0].plot(welchR[0], welchLmean[0])
     axs[0].fill_between(welchR[0], welchRmean[0] - welchRSTD[0], welchRmean[0] + welchRSTD[0], alpha=0.5)

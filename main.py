@@ -22,6 +22,5 @@ def main():
     rda.save_raw_and_epochs(subj, raw, raw_csd, epochs, board_data)
 
 
-
 if __name__ == "__main__":
     main()
