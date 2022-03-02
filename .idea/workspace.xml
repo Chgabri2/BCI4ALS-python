@@ -5,68 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76c22756-8b34-421f-818e-22ed9b00033b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Marker.py" beforeDir="false" afterPath="$PROJECT_DIR$/Marker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Temporal_viz_and_model.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Temporal_viz_and_model.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classification.py" beforeDir="false" afterPath="$PROJECT_DIR$/classification.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_spectrogram_vars.m" beforeDir="false" afterPath="$PROJECT_DIR$/create_spectrogram_vars.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features_extraction.py" beforeDir="false" afterPath="$PROJECT_DIR$/features_extraction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/offline_training.py" beforeDir="false" afterPath="$PROJECT_DIR$/offline_training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot_spectrogram.m" beforeDir="false" afterPath="$PROJECT_DIR$/plot_spectrogram.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-11--16-42-50_davery/epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-11--16-42-50_davery/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--09-39-04_111/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--09-39-04_111/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--10-10-57_120/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--10-10-57_120/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--10-51-21_1001/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--10-51-21_1001/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--13-55-52_0001/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--13-55-52_0001/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--14-34-52_00011/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-14--14-34-52_00011/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--10-24-40_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--10-24-40_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--10-43-26_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--10-43-26_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-08-08_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-08-08_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-08-08_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-17-07_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-17-07_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-17-07_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-26-15_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-26-15_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-26-15_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-38-01_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-38-01_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-16--11-38-01_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--09-56-23_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--09-56-23_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--09-56-23_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-01-18_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-01-18_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-01-18_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-05-18_0088/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-05-18_0088/.ipynb_checkpoints/board_data-checkpoint.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-05-18_0088/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-19--10-05-18_0088/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-31-15_1/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-31-15_1/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-31-15_1/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-34-44_1/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-34-44_1/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-34-44_1/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--12-34-44_1/raw_csd.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--14-06-17_0099/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--14-06-17_0099/board_data.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--14-06-17_0099/raw.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/2021-12-21--14-06-17_0099/raw_csd.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/try/-epo.fif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordings/try/raw.fif" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/visualization1.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +54,25 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.features_extraction">
+  <component name="RunManager" selected="Python.visualization1">
+    <configuration name="classification" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BCI4ALS-python" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/classification.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="example_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BCI4ALS-python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -171,27 +133,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="visualization" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="BCI4ALS-python" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/visualization.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="visualization1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BCI4ALS-python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -212,11 +153,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.features_extraction" />
         <item itemvalue="Python.visualization1" />
+        <item itemvalue="Python.features_extraction" />
+        <item itemvalue="Python.classification" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.example_data" />
-        <item itemvalue="Python.visualization" />
       </list>
     </recent_temporary>
   </component>
@@ -248,5 +189,16 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/classification.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

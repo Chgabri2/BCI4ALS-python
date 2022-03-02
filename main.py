@@ -11,10 +11,10 @@ import raw_data_analysis as rda
 def main():
     subj = input("Enter Subject Name: ")
     params = {
-        'trial_duration': 4,
-        'trials_per_stim': 10,
-        'trial_gap': 2,
-        'ready_duration': 2
+        'trial_duration': TRIAL_DUR,
+        'trials_per_stim': TRIALS_PER_STIM,
+        'trial_gap': TRIAL_GAP,
+        'ready_duration': READY_DUR
     }
     raw, board_data = offline_training.run_session(**params)
     raw = rda.set_reference_digitization(raw)

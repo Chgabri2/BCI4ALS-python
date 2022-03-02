@@ -78,15 +78,15 @@ def create_psd(epochR, epochL, epochs_Idle, FS, window_size, overlap, freq):
     axs[1].set_ylabel("power (DB)")
     plt.show()
 
-# SPECTOGRAM Using Matlab code
-elecs = EEG_CHAN_NAMES[2:4]
-classes = [["left"], ["right"], ["Idle"]]
 def create_spectogram(epochR, epochL, epochs_Idle, window_size, overlap, FS, elecs, classes ):
     eng = matlab.engine.connect_matlab()
     eng.plot_spectrogram(matlab.double(epochL.tolist()), matlab.double(epochR.tolist()), matlab.double(epochs_Idle.tolist()),
                          elecs, matlab.double(freq.tolist()), float(window_size), float(overlap), FS, classes)
     input("Press Enter to continue...")
 
+# SPECTOGRAM Using Matlab code
+elecs = EEG_CHAN_NAMES[2:4]
+classes = [["left"], ["right"], ["Idle"]]
 create_psd(epochR, epochL,epochs_Idle, FS, window_size, overlap, freq)
 create_spectogram(epochR, epochL, epochs_Idle, window_size, overlap, FS, elecs, classes)
 plt.show()

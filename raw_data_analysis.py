@@ -10,10 +10,20 @@ import numpy as np
 
 def get_epochs(raw, trial_duration, ready_duration):
     events = mne.find_events(raw, EVENT_CHAN_NAME)
-    # TODO: add proper baseline
     event_dict = {'Right': 1, 'Left': 2, 'Idle': 3}
-    epochs = mne.Epochs(raw, events, event_dict, -ready_duration, trial_duration, picks="data", baseline=(-ready_duration, 0), preload=True)
+    epochs = mne.Epochs(raw, events, event_dict, -ready_duration,
+                        trial_duration, picks=EEG_CHAN_NAMES[:13], baseline=(-ready_duration, 0)
+                        , preload=True)
     return epochs
+
+def concatenate_epochs(recordings):
+    epoch_list = []
+    for path in recordings:
+        raw = mne.io.read_raw_fif(path + "/raw.fif", preload=True)
+        raw = set_reference_digitization(raw)
+        raw_csd = apply_filters(raw)
+        epoch_list.append(get_epochs(raw_csd, TRIAL_DUR, READY_DUR))
+        return mne.concatenate_epochs(epoch_list)
 
 def save_raw_and_epochs(subj, raw, filtered_recording, epochs, board_data):
     folder_path = create_session_folder(subj)
@@ -40,11 +50,11 @@ def set_reference_digitization(raw):
 def apply_filters(raw):
     raw.notch_filter(25)
     raw.filter(1, 40)
-    raw_csd = mne.preprocessing.compute_current_source_density(raw) # Laplacian
-    return raw_csd
+    #raw_csd = mne.preprocessing.compute_current_source_density(raw) # Laplacian
+    return raw
 
 def perform_ICA(raw):
-    ica = mne.preprocessing.ICA(n_components=14, random_state=100, max_iter=1000)
+    ica = mne.preprocessing.ICA(n_components=13, random_state=100, max_iter=1000)
     ica.fit(raw)
     ica.exclude = [ica.ch_names.index('O1'), ica.ch_names.index('O2')]
     return ica.apply(raw)
@@ -63,8 +73,7 @@ def devide_to_labels(recording_path, apply_ica = False):
         if apply_ica:
             raw_csd = perform_ICA(raw_csd)
 
-        stim_dur = 4
-        epochs = get_epochs(raw_csd, stim_dur, 2).pick_channels(['C3', 'C4'])
+        epochs = get_epochs(raw_csd, TRIAL_DUR, READY_DUR).pick_channels(['C3', 'C4'])
         print(epochs)
         epochR = epochs['Right'].get_data()
         epochL = epochs['Left'].get_data()
