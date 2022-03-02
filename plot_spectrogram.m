@@ -17,12 +17,13 @@
     % two figures: one of the spectrogram plots for both hands and both electrode,
     % and the other of thespectrogram of the power difference.
 
-function mean_power_dif = plot_spectrogram(left_data, right_data, electrodes,...
+function mean_power_dif = plot_spectrogram(left_data, right_data, idle_data, electrodes,...
                                             freq, window, overlap, Fs, classes)
     % create windows data
     left_data = permute(left_data, [1 3 2]);
     right_data = permute(right_data, [1 3 2]);
-    all_rec_data = cat(3, left_data, right_data)
+    idle_data = permute(idle_data, [1 3 2]);
+    all_rec_data = cat(3, left_data, right_data, idle_data)
     num_windows = floor((size(right_data,2) - window)/(window-overlap))+1; % Number of windows.
 
     % Plot design details
@@ -46,11 +47,12 @@ function mean_power_dif = plot_spectrogram(left_data, right_data, electrodes,...
     sgtitle('Power Spectrogram', 'FontSize', title_Fontsize);
     for elec = 1:elec_num
         for hand = 1:num_classes
-            plot_ind = (elec-1)*2 + hand;
+            plot_ind = (elec-1)*num_classes + hand;
+            disp(plot_ind);
             subplot(elec_num, num_classes, plot_ind);
             [t, f, mean_power{elec, hand}] = create_spectrogram_vars(all_rec_data(:,:,2*hand-1:hand*2), elec, freq, num_windows, window, overlap, Fs);
-            imagesc(t, f, mean_power{elec, hand}); % present data (PLOT)
-            set(gca, 'YDir','normal')
+            imagesc(t, f, mean_power{elec, hand}); % present data (PLOT);
+            set(gca, 'YDir','normal');
             
             % coloring
             colormap(jet) 
@@ -58,13 +60,13 @@ function mean_power_dif = plot_spectrogram(left_data, right_data, electrodes,...
             
             % plot properties
             hold on
-            title([lower(classes{hand}) ' hand ' electrodes{elec}], 'FontSize', Fontsize);
+            title([lower(classes{hand}), electrodes{elec}], 'FontSize', Fontsize);
             
             if mod(plot_ind, num_classes) == 1
                 ylabel('Frequency [Hz]', 'FontSize', Fontsize);
             end
             if elec == elec_num
-                xlabel('Time [Sec]' ,'FontSize', Fontsize)
+                xlabel('Time [Sec]' ,'FontSize', Fontsize);
             end
         end 
     end
@@ -77,13 +79,13 @@ function mean_power_dif = plot_spectrogram(left_data, right_data, electrodes,...
     sgtitle('Power Spectrogram difference (Right-Left)');
     for elec = 1:elec_num
         subplot(1, elec_num, elec);
-        mean_power_dif{elec} = abs(mean_power{elec, 1} - mean_power{elec, 2}); % calculate power difference. (right minus left)
-        imagesc(t, f, mean_power_dif{elec});  % present data (PLOT)
+        mean_power_dif{elec} = abs(mean_power{elec, 1} - mean_power{elec, 2}); % calculate power difference. (right minus left);
+        imagesc(t, f, mean_power_dif{elec});  % present data (PLOT);
         set(gca, 'YDir','normal')
         
         % coloring
-        colormap(jet) 
-        colorbar('visible' , 'off')
+        colormap(jet) ;
+        colorbar('visible' , 'off');
         hold on 
         
         % plot properties

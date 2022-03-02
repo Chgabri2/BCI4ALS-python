@@ -7,3 +7,9 @@
 .idea/BCI4ALS-python.iml
 .idea/misc.xml
 .idea/workspace.xml
+*.fif
+*.fif
+*.zip
+*.csv
+recordings/2021-12-16--11-26-15_0088/-epo.fif
+*.fif

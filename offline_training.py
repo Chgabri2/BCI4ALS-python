@@ -6,8 +6,7 @@ from Marker import Marker
 from constants import *
 import mne
 
-
-def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1):
+def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1, ready_duration=2):
     trial_stims = np.tile(Marker.all(), trials_per_stim)
     np.random.shuffle(trial_stims)
 
@@ -20,6 +19,11 @@ def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1):
     win = visual.Window(units="norm")
     win.flip()
     for stim in trial_stims:
+        show_ready_stimulus(win, stim)
+        core.wait(ready_duration)
+        core.wait(trial_gap)
+        win.flip()  # hide stimulus
+
         show_stimulus(win, stim)
         board.insert_marker(stim)
         core.wait(trial_duration)
@@ -27,6 +31,7 @@ def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1):
         core.wait(trial_gap)
 
     # stop recording
+    core.wait(0.5)
     raw = convert_to_mne(board.get_board_data())
     board_data = board.get_board_data()
     board.stop_stream()
@@ -34,11 +39,13 @@ def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1):
 
     return raw, board_data
 
-
 def show_stimulus(win, stim):
     ImageStim(win=win, image=Marker(stim).image_path, units="norm", size=2).draw()
     win.update()
 
+def show_ready_stimulus(win, stim):
+    ImageStim(win=win, image=Marker(stim).image_ready_path, units="norm", size=2).draw()
+    win.update()
 
 def create_board():
     params = BrainFlowInputParams()
@@ -50,7 +57,6 @@ def create_board():
     board = BoardShim(BOARD_ID, params)
     board.prepare_session()
     return board
-
 
 def convert_to_mne(recording):
     recording[EEG_CHANNELS] = recording[EEG_CHANNELS] / 1e6  # BrainFlow returns uV, convert to V for MNE

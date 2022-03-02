@@ -14,11 +14,12 @@ def main():
         'trial_duration': 4,
         'trials_per_stim': 10,
         'trial_gap': 2,
+        'ready_duration': 2
     }
     raw, board_data = offline_training.run_session(**params)
     raw = rda.set_reference_digitization(raw)
     raw_csd = rda.apply_filters(raw)
-    epochs = rda.get_epochs(raw_csd, params['trial_duration'])
+    epochs = rda.get_epochs(raw_csd, params['trial_duration'],  params['ready_duration'])
     rda.save_raw_and_epochs(subj, raw, raw_csd, epochs, board_data)
 
 

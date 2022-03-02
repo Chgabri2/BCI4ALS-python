@@ -8,11 +8,11 @@ import offline_training
 import pandas as pd
 import numpy as np
 
-def get_epochs(raw, trial_duration):
+def get_epochs(raw, trial_duration, ready_duration):
     events = mne.find_events(raw, EVENT_CHAN_NAME)
     # TODO: add proper baseline
     event_dict = {'Right': 1, 'Left': 2, 'Idle': 3}
-    epochs = mne.Epochs(raw, events, event_dict, 0, trial_duration, picks="data", baseline=(0, 0), preload=True)
+    epochs = mne.Epochs(raw, events, event_dict, -ready_duration, trial_duration, picks="data", baseline=(-ready_duration, 0), preload=True)
     return epochs
 
 def save_raw_and_epochs(subj, raw, filtered_recording, epochs, board_data):
@@ -52,6 +52,7 @@ def perform_ICA(raw):
 def devide_to_labels(recording_path, apply_ica = False):
     Repochs = np.array([])
     Lepochs = np.array([])
+    Idle_epochs = np.array([])
 
     # running on all recordings
     for path in recording_path:
@@ -63,12 +64,13 @@ def devide_to_labels(recording_path, apply_ica = False):
             raw_csd = perform_ICA(raw_csd)
 
         stim_dur = 4
-        epochs = get_epochs(raw_csd, stim_dur).pick_channels(['C3','C4'])
-
-        epochR = epochs['1'].get_data()
-        epochL = epochs['2'].get_data()
+        epochs = get_epochs(raw_csd, stim_dur, 2).pick_channels(['C3', 'C4'])
+        print(epochs)
+        epochR = epochs['Right'].get_data()
+        epochL = epochs['Left'].get_data()
+        epochs_Idle = epochs['Idle'].get_data()
 
         Repochs = np.vstack([Repochs, epochR]) if Repochs.size else epochR
         Lepochs = np.vstack([Lepochs, epochL]) if Lepochs.size else epochL
-
-    return Repochs, Lepochs
+        Idle_epochs = np.vstack([Idle_epochs, epochs_Idle]) if Idle_epochs.size else epochs_Idle
+    return Repochs, Lepochs, Idle_epochs

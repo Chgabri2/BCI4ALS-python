@@ -12,6 +12,10 @@ class Marker(IntEnum):
     def image_path(self):
         return os.path.join(IMAGES_DIR, f'{self.name}.png')
 
+    @property
+    def image_ready_path(self):
+        return os.path.join(IMAGES_DIR, f'{self.name}_ready.png')
+
     @classmethod
     def all(cls):
         return [stim.value for stim in cls]

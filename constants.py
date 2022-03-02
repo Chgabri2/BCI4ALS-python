@@ -1,7 +1,8 @@
 from brainflow import BoardIds, BoardShim
 import serial.tools.list_ports
 
-BOARD_ID = BoardIds.CYTON_DAISY_BOARD #BoardIds.SYNTHETIC_BOARD#
+BOARD_ID = BoardIds.CYTON_DAISY_BOARD #
+#BOARD_ID = BoardIds.SYNTHETIC_BOARD
 IMAGES_DIR = "./images"
 #RECORDINGS_DIR = "/Users/ronifarkash/Documents/GitHub/BCI4ALS-python/recordings" # for roni
 RECORDINGS_DIR: str = "./recordings" # for others

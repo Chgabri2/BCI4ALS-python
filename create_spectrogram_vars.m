@@ -16,9 +16,7 @@
     % mean_power  = the mean of the signal power in a certain electrode.
     
 function [t, f, mean_power] = create_spectrogram_vars(data, elec_num, freq, num_windows, window, overlap, Fs)
-     
-%     power = zeros(size(data, 1), length(freq), num_windows); % alocate matrix to insert data
-    num_windows = 220
+    num_windows = 345
     power = zeros(size(data, 1), length(freq), num_windows); % alocate matrix to insert data
 
      % going over samples data.

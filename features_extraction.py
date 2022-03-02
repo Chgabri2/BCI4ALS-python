@@ -8,6 +8,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.ensemble import RandomForestClassifier
 import classification as cl
 from scipy import stats
 
@@ -31,7 +32,7 @@ def get_features(fname):
     raw_csd = rda.apply_filters(raw)
     raw_csd = rda.perform_ICA(raw_csd)
     stim_dur = 4
-    epochs = rda.get_epochs(raw_csd, stim_dur)
+    epochs = rda.get_epochs(raw_csd, stim_dur, 2)
 
     band_power = get_alpha_beta(epochs.pick_channels(['C3', 'C4']))
     classes = epochs.events[:,2]
@@ -41,8 +42,14 @@ def get_features(fname):
 # recordings = [RECORDINGS_DIR + "\\2021-12-26--11-07-27_ori3", RECORDINGS_DIR + "\\2021-12-26--10-57-01_ori2",
 #               RECORDINGS_DIR + "\\2021-12-26--10-40-04_ori1", RECORDINGS_DIR + "\\2021-12-21--13-59-03_0088"]
 
-recordings = [RECORDINGS_DIR + "\\2022-01-18--10-49-37_ori", RECORDINGS_DIR + "\\2022-01-18--11-03-29_ori", \
-              RECORDINGS_DIR + "\\2022-01-18--11-06-56_ori", RECORDINGS_DIR + "\\2022-01-18--11-06-56_ori" ]
+#recordings = [RECORDINGS_DIR + "\\2022-01-18--12-50-35_ori", RECORDINGS_DIR + "\\2022-01-18--12-47-09_ori", \
+             # RECORDINGS_DIR + "\\2022-01-18--12-36-52_ori", RECORDINGS_DIR + "\\2022-01-18--12-41-06_ori" ]
+recordings = [RECORDINGS_DIR + "\\2022-01-18--12-50-35_ori", RECORDINGS_DIR + "\\2022-01-18--12-47-09_ori", \
+              RECORDINGS_DIR + "\\2022-01-18--12-36-52_ori", RECORDINGS_DIR + "\\2022-01-18--12-41-06_ori",
+              RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR + "\\2022-02-28--11-50-08_Ori",
+              RECORDINGS_DIR + "\\2021-12-26--11-07-27_ori3", RECORDINGS_DIR + "\\2021-12-26--10-57-01_ori2",
+              RECORDINGS_DIR + "\\2021-12-26--10-40-04_ori1", RECORDINGS_DIR + "\\2021-12-21--13-59-03_0088",
+              RECORDINGS_DIR + "\\2022-02-28--11-58-23_Ori",RECORDINGS_DIR + "\\2022-02-28--12-05-11_Ori"]
 
 all_feature=np.array([])
 all_classes=np.array([])
@@ -50,22 +57,29 @@ all_classes=np.array([])
 #running on all recordings
 for path in recordings:
     features, classes= get_features(path+ "/raw.fif")
-    if len(classes)!=30:
+    if len(classes) != 30:
         print(path)
     all_feature = np.vstack([all_feature, features]) if all_feature.size else features
-    all_classes = np.vstack([all_classes, classes]) if all_classes.size else classes
+    all_classes = np.hstack([all_classes, classes]) if all_classes.size else classes
 all_classes = all_classes.flatten()
 
 print(all_feature.shape, all_classes.shape)
-clf = LinearDiscriminantAnalysis()
-clf.fit(all_feature, all_classes)
-pred = clf.predict(all_feature)
-cnfsn_mat_train = confusion_matrix(all_classes, pred)
-ConfusionMatrixDisplay(confusion_matrix(classes, pred)).plot()
-print("on train",classification_report(pred,all_classes))
 
-fname = RECORDINGS_DIR + "\\2022-01-18--11-14-32_ori\\raw.fif"
+# all_feature = all_feature[all_classes != 3]
+# all_classes = all_classes[all_classes != 3]
+
+clf = RandomForestClassifier()
+clf.fit(all_feature, all_classes)
+pred_train = clf.predict(all_feature)
+print(all_classes, pred_train)
+cnfsn_mat_train = confusion_matrix(all_classes, pred_train, labels=[1, 2, 3])
+ConfusionMatrixDisplay(confusion_matrix(all_classes, pred_train)).plot()
+print("on train", classification_report(pred_train, all_classes))
+
+fname = RECORDINGS_DIR + "\\2022-02-28--12-12-08_Ori\\raw.fif"
 features, classes= get_features(fname)
-pred=clf.predict(features)
-print("on test", classification_report(pred, classes))
-cnfsn_mat_test = confusion_matrix(classes, pred)
+pred_test = clf.predict(features)
+print (classes, pred_test)
+print("on test", classification_report(pred_test, classes))
+cnfsn_mat_test = confusion_matrix(classes, pred_test, labels=[1, 2, 3])
+ConfusionMatrixDisplay(confusion_matrix(classes, pred_test)).plot()
