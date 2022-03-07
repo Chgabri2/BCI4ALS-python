@@ -24,7 +24,7 @@ def get_epochs(raw, trial_duration):
 
 # read files
 #raw = mne.io.read_raw_fif(RECORDINGS_DIR +"/2021-12-26--11-07-27_ori3/raw.fif", preload=True) #for mac
-raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2021-12-26--10-40-04_ori1\\raw.fif", preload=True) #for windows
+raw = mne.io.read_raw_fif(RECORDINGS_DIR +"\\2022-02-28--12-12-08_Ori\\raw.fif", preload=True) #for windows
 
 # high pass low pass
 raw.filter(1, 30)

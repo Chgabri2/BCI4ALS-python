@@ -26,11 +26,12 @@ def get_alpha_beta(data):
     return np.nan_to_num(band_power)
 
 def get_features(fname):
-    raw = mne.io.read_raw_fif(fname, preload=True)
-    raw = rda.set_reference_digitization(raw)
-    raw_csd = rda.apply_filters(raw)
-    # raw_csd = rda.perform_ICA(raw_csd)
-    epochs = rda.get_epochs(raw_csd, TRIAL_DUR, READY_DUR)
+    # raw = mne.io.read_raw_fif(fname, preload=True)
+    # raw = rda.set_reference_digitization(raw)
+    # raw_csd = rda.apply_filters(raw)
+    # # raw_csd = rda.perform_ICA(raw_csd)
+    raw = rda.process_raw(fname)
+    epochs = rda.get_epochs(raw, TRIAL_DUR, READY_DUR)
 
     band_power = get_alpha_beta(epochs.pick_channels(['C3', 'C4']))
     classes = epochs.events[:,2]
@@ -47,8 +48,8 @@ recordings_all = [RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR 
               RECORDINGS_DIR + "\\2022-02-28--11-58-23_Ori",RECORDINGS_DIR + "\\2022-02-28--12-05-11_Ori",
                   RECORDINGS_DIR + "\\2022-02-28--12-12-08_Ori"]
 
-recordings_all = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
-              RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
+# recordings_all = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
+#               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
 
 # reorder list randomly
 order = np.random.permutation(len(recordings_all))
@@ -60,7 +61,7 @@ recordings_test = recordings_all[-1:]
 all_feature_train=np.array([])
 all_classes_train=np.array([])
 for path in recordings_train:
-    features, classes= get_features(path+ "/raw.fif")
+    features, classes= get_features(path + "/raw.fif")
     if len(classes) != 30:
         print(path)
     all_feature_train = np.vstack([all_feature_train, features]) if all_feature_train.size else features
@@ -96,5 +97,8 @@ cnfsn_mat_test = confusion_matrix(all_classes_test, pred_test, labels=[1, 2, 3])
 ConfusionMatrixDisplay(confusion_matrix(all_classes_test, pred_test)).plot()
 
 ## CSP
-all_ep  = rda.concatenate_epochs(recordings_all)
+all_ep = rda.concatenate_epochs(recordings_all)
 cl.create_CSP(all_ep)
+
+## cross validation
+clf1 = cl.create_classifier(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))

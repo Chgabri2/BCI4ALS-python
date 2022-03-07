@@ -8,21 +8,28 @@ import offline_training
 import pandas as pd
 import numpy as np
 
+def process_raw(path):
+    raw = mne.io.read_raw_fif(path, preload=True)
+    picks = list(range(len(EEG_CHAN_NAMES) - 1)) + [len(raw.ch_names) - 1]
+    raw.pick(picks)
+    raw = set_reference_digitization(raw)
+    dictOfchans = {raw.info.ch_names[i]: EEG_CHAN_NAMES[i] for i in range(len(EEG_CHAN_NAMES))}
+    mne.channels.rename_channels(raw.info, dictOfchans)
+    return apply_filters(raw)
+
 def get_epochs(raw, trial_duration, ready_duration):
     events = mne.find_events(raw, EVENT_CHAN_NAME)
     event_dict = {'Right': 1, 'Left': 2, 'Idle': 3}
     epochs = mne.Epochs(raw, events, event_dict, -ready_duration,
-                        trial_duration, picks=EEG_CHAN_NAMES[:13], baseline=(-ready_duration, 0)
+                        trial_duration, picks=range(13), baseline=(-ready_duration, 0)
                         , preload=True)
     return epochs
 
 def concatenate_epochs(recordings):
     epoch_list = []
     for path in recordings:
-        raw = mne.io.read_raw_fif(path + "/raw.fif", preload=True)
-        raw = set_reference_digitization(raw)
-        raw_csd = apply_filters(raw)
-        epoch_list.append(get_epochs(raw_csd, TRIAL_DUR, READY_DUR))
+        raw = process_raw(path + "/raw.fif")
+        epoch_list.append(get_epochs(raw, TRIAL_DUR, READY_DUR))
         return mne.concatenate_epochs(epoch_list)
 
 def save_raw_and_epochs(subj, raw, filtered_recording, epochs, board_data):
@@ -66,14 +73,15 @@ def devide_to_labels(recording_path, apply_ica = False):
 
     # running on all recordings
     for path in recording_path:
-        raw = mne.io.read_raw_fif(path + "/raw.fif", preload=True)
-        raw = set_reference_digitization(raw)
-        raw_csd = apply_filters(raw)
-
+        # raw = mne.io.read_raw_fif(path + "/raw.fif", preload=True)
+        # # raw.info.ch_names = EEG_CHAN_NAMES
+        # raw = set_reference_digitization(raw)
+        # raw_csd = apply_filters(raw)
+        raw_csd = process_raw(path + "/raw.fif")
         if apply_ica:
             raw_csd = perform_ICA(raw_csd)
 
-        epochs = get_epochs(raw_csd, TRIAL_DUR, READY_DUR).pick_channels(['C3', 'C4'])
+        epochs = get_epochs(raw_csd, TRIAL_DUR, READY_DUR).pick_channels(['Fp1', 'Fp2'])
         print(epochs)
         epochR = epochs['Right'].get_data()
         epochL = epochs['Left'].get_data()

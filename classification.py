@@ -20,7 +20,7 @@ def create_CSP(epochs):
 
     # Assemble a classifier
     lda = LinearDiscriminantAnalysis()
-    csp = CSP(n_components=4)
+    csp = CSP(n_components=8)
 
     # Use scikit-learn Pipeline with cross_val_score function
     clf = Pipeline([('CSP', csp), ('LDA', lda)])
@@ -33,5 +33,5 @@ def create_CSP(epochs):
                                                               class_balance))
 
     # plot CSP patterns estimated on full data for visualization
-    csp.fit_transform(epochs_data_train, labels)
-    csp.plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)
+    # csp.fit_transform(epochs_data_train, labels)
+    # csp.plot_patterns(epochs.info, ch_type='eeg', units='Patterns (AU)', size=1.5)

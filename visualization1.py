@@ -18,15 +18,16 @@ recordings = [RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR + "\
               RECORDINGS_DIR + "\\2022-02-28--12-12-08_Ori"]
 # recordings = [RECORDINGS_DIR + "\\2022-01-18--12-50-35_ori", RECORDINGS_DIR + "\\2022-01-18--12-47-09_ori", \
 #               RECORDINGS_DIR + "\\2022-01-18--12-36-52_ori", RECORDINGS_DIR + "\\2022-01-18--12-41-06_ori" ]
+# recordings = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
+#               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
 
-stim_dur = 4
-epochR, epochL, epochs_Idle = rda.devide_to_labels(recordings, apply_ica = True)
+epochR, epochL, epochs_Idle = rda.devide_to_labels(recordings)
 
 # Define parameters.
 freq = np.arange(1, 40, 0.1)
 FS = 125
-window_size = 0.5 * FS                    # Window size.
-overlap = np.floor(49/50 * window_size)
+window_size = FS                    # Window size.
+overlap = np.floor(0.5 * window_size)
 num_windows = math.floor((epochR.shape[2] - window_size) / (window_size - overlap)) + 1;
 window = np.hamming(num_windows)
 
@@ -56,7 +57,7 @@ def create_psd(epochR, epochL, epochs_Idle, FS, window_size, overlap, freq):
     axs[0].set_title("C3")
     axs[0].legend(['Right', 'Left', 'Idle'])
     axs[0].set_xlim(right=40, left=1)
-    axs[0].set_ylim(-50)
+    axs[0].set_ylim(-120)
     axs[0].set_xscale("log")
     axs[0].set_xlabel("log(frequency) [Hz]")
     axs[0].set_ylabel("power (DB)")
@@ -72,21 +73,15 @@ def create_psd(epochR, epochL, epochs_Idle, FS, window_size, overlap, freq):
     axs[1].set_title("C4")
     axs[1].legend(['Right', 'Left', 'Idle'])
     axs[1].set_xlim(right=40, left=1)
-    axs[1].set_ylim(-50)
+    axs[1].set_ylim(-120)
     axs[1].set_xscale("log")
     axs[1].set_xlabel("log(frequency) [Hz]")
     axs[1].set_ylabel("power (DB)")
     plt.show()
 
-def create_spectogram(epochR, epochL, epochs_Idle, window_size, overlap, FS, elecs, classes ):
-    eng = matlab.engine.connect_matlab()
-    eng.plot_spectrogram(matlab.double(epochL.tolist()), matlab.double(epochR.tolist()), matlab.double(epochs_Idle.tolist()),
-                         elecs, matlab.double(freq.tolist()), float(window_size), float(overlap), FS, classes)
-    input("Press Enter to continue...")
 
 # SPECTOGRAM Using Matlab code
 elecs = EEG_CHAN_NAMES[2:4]
 classes = [["left"], ["right"], ["Idle"]]
 create_psd(epochR, epochL,epochs_Idle, FS, window_size, overlap, freq)
-create_spectogram(epochR, epochL, epochs_Idle, window_size, overlap, FS, elecs, classes)
 plt.show()
