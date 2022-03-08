@@ -13,31 +13,9 @@ import classification as cl
 from scipy import stats
 
 FREQ_BANDS = [8, 12, 20]
-
-def get_alpha_beta_overlap(data, window_size, stim_dur):
-    band_power = np.zeros([data.get_data().shape[0], data.get_data().shape[1]*2, stim_dur*10])
-    for i in range(stim_dur * 10):
-        shorter_epochs = data.copy().crop(tmin= i/10, tmax=i/10+window_size, include_tmax=True)
-        band_power[:,:,i] = np.array([compute_pow_freq_bands(FS, shorter_epochs, FREQ_BANDS) for epoch in data])
-        return band_power
-
-def get_alpha_beta(data):
-    band_power = np.array([compute_pow_freq_bands(FS, epoch, FREQ_BANDS) for epoch in data])
-    return np.nan_to_num(band_power)
-
-def get_features(fname):
-    # raw = mne.io.read_raw_fif(fname, preload=True)
-    # raw = rda.set_reference_digitization(raw)
-    # raw_csd = rda.apply_filters(raw)
-    # # raw_csd = rda.perform_ICA(raw_csd)
-    raw = rda.process_raw(fname)
-    epochs = rda.get_epochs(raw, TRIAL_DUR, READY_DUR)
-
-    band_power = get_alpha_beta(epochs.pick_channels(['C3', 'C4']))
-    classes = epochs.events[:,2]
-    features = band_power
-    return features, classes
-
+'''
+recordings
+'''
 # recordings = [RECORDINGS_DIR + "\\2021-12-26--11-07-27_ori3", RECORDINGS_DIR + "\\2021-12-26--10-57-01_ori2",
 #               RECORDINGS_DIR + "\\2021-12-26--10-40-04_ori1", RECORDINGS_DIR + "\\2021-12-21--13-59-03_0088"]
 
@@ -47,21 +25,81 @@ def get_features(fname):
 recordings_all = [RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR + "\\2022-02-28--11-50-08_Ori",
               RECORDINGS_DIR + "\\2022-02-28--11-58-23_Ori",RECORDINGS_DIR + "\\2022-02-28--12-05-11_Ori",
                   RECORDINGS_DIR + "\\2022-02-28--12-12-08_Ori"]
-
-# recordings_all = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
-#               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
-
+#
+# recordings_all = [RECORDINGS_DIR + "\\2022-03-08--13-50-17_OriMove", RECORDINGS_DIR + "\\2022-03-08--13-55-58_OriMove",
+#               RECORDINGS_DIR + "\\2022-03-08--14-01-52_OriMove"]
+#
+# # recordings_all = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
+# #               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
+# recordings_all = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
+#               RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
 # reorder list randomly
+
+
+
+def get_alpha_beta_overlap(data, window_size, stim_dur):
+    '''
+    Not in use
+    Parameters
+    ----------
+    data
+    window_size
+    stim_dur
+
+    Returns
+    -------
+    '''
+    band_power = np.zeros([data.get_data().shape[0], data.get_data().shape[1]*2, stim_dur*10])
+    for i in range(stim_dur * 10):
+        shorter_epochs = data.copy().crop(tmin= i/10, tmax=i/10+window_size, include_tmax=True)
+        band_power[:,:,i] = np.array([compute_pow_freq_bands(FS, shorter_epochs, FREQ_BANDS) for epoch in data])
+        return band_power
+
+def get_alpha_beta(data):
+    '''
+
+    Parameters
+    ----------
+    data
+
+    Returns
+    -------
+
+    '''
+    band_power = np.array([compute_pow_freq_bands(FS, epoch, FREQ_BANDS) for epoch in data])
+    return np.nan_to_num(band_power)
+
+def get_features(fname):
+    '''
+
+    Parameters
+    ----------
+    fname
+
+    Returns
+    -------
+    features = features of alpha and beta waves from the data.
+    classes = data labels
+
+    '''
+    raw = rda.process_raw(fname)
+    epochs = rda.get_epochs(raw, TRIAL_DUR, READY_DUR)
+    # band_power = get_alpha_beta(epochs.pick_channels(['C3', 'C4']))
+    band_power = get_alpha_beta(epochs)
+    classes = epochs.events[:,2]
+    features = band_power
+    return features, classes
+
 order = np.random.permutation(len(recordings_all))
 recordings_all = [recordings_all[i] for i in order]
 recordings_train = recordings_all[:-1]
 recordings_test = recordings_all[-1:]
 
 #Train session
-all_feature_train=np.array([])
-all_classes_train=np.array([])
+all_feature_train = np.array([])
+all_classes_train = np.array([])
 for path in recordings_train:
-    features, classes= get_features(path + "/raw.fif")
+    features, classes = get_features(path + "/raw.fif")
     if len(classes) != 30:
         print(path)
     all_feature_train = np.vstack([all_feature_train, features]) if all_feature_train.size else features
@@ -70,9 +108,7 @@ all_classes_train = all_classes_train.flatten()
 
 print(all_feature_train.shape, all_classes_train.shape)
 
-# all_feature = all_feature[all_classes != 3]
-# all_classes = all_classes[all_classes != 3]
-
+#  Simple LDA classifications
 clf = LinearDiscriminantAnalysis()
 clf.fit(all_feature_train, all_classes_train)
 pred_train = clf.predict(all_feature_train)
@@ -82,8 +118,8 @@ ConfusionMatrixDisplay(confusion_matrix(all_classes_train, pred_train)).plot()
 print("on train", classification_report(pred_train, all_classes_train))
 
 # Test session
-all_feature_test=np.array([])
-all_classes_test=np.array([])
+all_feature_test = np.array([])
+all_classes_test = np.array([])
 for path in recordings_test:
     features, classes = get_features(path + "\\raw.fif")
     if len(classes) != 30:
@@ -97,8 +133,26 @@ cnfsn_mat_test = confusion_matrix(all_classes_test, pred_test, labels=[1, 2, 3])
 ConfusionMatrixDisplay(confusion_matrix(all_classes_test, pred_test)).plot()
 
 ## CSP
-all_ep = rda.concatenate_epochs(recordings_all)
-cl.create_CSP(all_ep)
+# all_ep = rda.concatenate_epochs(recordings_all)
+# cl.create_CSP(all_ep)
 
-## cross validation
+## LDA cross validation
 clf1 = cl.create_classifier(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))
+print(np.mean(clf1[1]))
+
+## Random forest
+clf2 = cl.create_classifier(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]), 'rnf')
+print(np.mean(clf2[1]))
+
+## param opt Random
+grid_search = cl.create_grid()
+grid_search.fit(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))
+print(grid_search.best_params_)
+print("val. score: %s" % grid_search.best_score_)
+best_grid = grid_search.best_estimator_
+#grid_accuracy = cl.evaluate(best_grid, all_feature_test, all_classes_test)
+
+## param opt Baysian
+opt = cl.create_opt()
+clf_Bayes = opt.fit(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))
+print("val. score: %s" % opt.best_score_)

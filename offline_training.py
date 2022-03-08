@@ -7,6 +7,7 @@ from constants import *
 import mne
 
 def run_session(trials_per_stim=3, trial_duration=1, trial_gap=1, ready_duration=2):
+    trial_gap = trial_gap[0]
     trial_stims = np.tile(Marker.all(), trials_per_stim)
     np.random.shuffle(trial_stims)
 

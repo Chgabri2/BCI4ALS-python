@@ -22,6 +22,15 @@ TRIALS_PER_STIM = 10,
 TRIAL_GAP = 2,
 READY_DUR = 2
 
+LAPLACIAN = {
+    "C3": ["FC5", "FC1", "CP5", "CP1"],
+    "Cz": ["FC1", "FC2", "CP1", "CP2"],
+    "C4": ["FC2", "FC6", "CP2", "CP6"]
+}
+
+LAPLACIAN = {EEG_CHAN_NAMES.index(key): [EEG_CHAN_NAMES.index(chan) for chan in value] for key, value in
+             LAPLACIAN.items()}
+
 
 def find_serial_port():
     """
