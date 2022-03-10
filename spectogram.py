@@ -21,8 +21,8 @@ recordings = [RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR + "\
 # recordings = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
 #               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
 
-recordings = [RECORDINGS_DIR + "\\2022-03-08--13-50-17_OriMove", RECORDINGS_DIR + "\\2022-03-08--13-55-58_OriMove",
-              RECORDINGS_DIR + "\\2022-03-08--14-01-52_OriMove"]
+# recordings = [RECORDINGS_DIR + "\\2022-03-08--13-50-17_OriMove", RECORDINGS_DIR + "\\2022-03-08--13-55-58_OriMove",
+#               RECORDINGS_DIR + "\\2022-03-08--14-01-52_OriMove"]
 # recordings = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
 #               RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
 

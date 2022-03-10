@@ -31,10 +31,9 @@ recordings_all = [RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR 
 #
 # # recordings_all = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
 # #               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
-# recordings_all = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
-#               RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
+recordings_all = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
+              RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
 # reorder list randomly
-
 
 
 def get_alpha_beta_overlap(data, window_size, stim_dur):
@@ -83,12 +82,16 @@ def get_features(fname):
 
     '''
     raw = rda.process_raw(fname)
-    epochs = rda.get_epochs(raw, TRIAL_DUR, READY_DUR)
+    epochs = rda.get_epochs(raw, TRIAL_DUR, READY_DUR).crop(tmin=2)
     # band_power = get_alpha_beta(epochs.pick_channels(['C3', 'C4']))
     band_power = get_alpha_beta(epochs)
     classes = epochs.events[:,2]
     features = band_power
     return features, classes
+
+def confmat(true_class, pred_class, labels):
+    cnfsn_mat = confusion_matrix(true_class, pred_class, labels=labels)
+
 
 order = np.random.permutation(len(recordings_all))
 recordings_all = [recordings_all[i] for i in order]
@@ -132,10 +135,6 @@ print("on test", classification_report(pred_test, all_classes_test))
 cnfsn_mat_test = confusion_matrix(all_classes_test, pred_test, labels=[1, 2, 3])
 ConfusionMatrixDisplay(confusion_matrix(all_classes_test, pred_test)).plot()
 
-## CSP
-# all_ep = rda.concatenate_epochs(recordings_all)
-# cl.create_CSP(all_ep)
-
 ## LDA cross validation
 clf1 = cl.create_classifier(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))
 print(np.mean(clf1[1]))
@@ -156,3 +155,27 @@ best_grid = grid_search.best_estimator_
 opt = cl.create_opt()
 clf_Bayes = opt.fit(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))
 print("val. score: %s" % opt.best_score_)
+
+## param opt Baysian CSP
+## CSP
+all_ep = rda.concatenate_epochs(recordings_all)
+features_csp, labels_csp = cl.create_CSP(all_ep)
+opt_csp = cl.create_opt()
+clf_Bayes = opt_csp.fit(features_csp, labels_csp)
+
+## CSP LDA
+clf3 = cl.create_classifier(features_csp, labels_csp)
+
+## CSP Bayes 2 classes
+features_csp_2, labels_csp_2 = cl.create_CSP(all_ep, two_classes=True)
+opt_csp_2 = cl.create_opt()
+clf_Bayes_2 = opt_csp_2.fit(features_csp_2, labels_csp_2)
+
+
+print("Random Forest cross validation mean score: %s" % np.mean(clf2[1]))
+print("LDA cross validation mean score: %s" % np.mean(clf1[1]))
+print("random forest optimization val. score: %s" % grid_search.best_score_)
+print("Bayesian random forest val. score: %s" % opt.best_score_)
+print("Bayesian CSP random forest val. score: %s" % opt_csp.best_score_)
+print("Bayesian CSP 2 classes random forest val. score: %s" % clf_Bayes_2.best_score_)
+print("CSP LDA mean score: %s" % np.mean(clf3[1]))

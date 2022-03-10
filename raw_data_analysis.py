@@ -8,7 +8,7 @@ import offline_training
 import pandas as pd
 import numpy as np
 
-def process_raw(path):
+def process_old_raw(path):
     '''
     read raw apply all filters used for preprocessing
 
@@ -28,6 +28,27 @@ def process_raw(path):
     mne.channels.rename_channels(raw.info, dictOfchans)
     return apply_filters(raw)
 
+def process_raw(path):
+    '''
+    read raw apply all filters used for preprocessing
+
+    Parameters
+    ----------
+    path
+
+    Returns
+    -------
+
+    '''
+    raw = mne.io.read_raw_fif(path, preload=True)
+    # picks = list(range(len(EEG_CHAN_NAMES) - 1)) + [len(raw.ch_names) - 1]
+    # raw.pick(picks)
+    raw = set_reference_digitization(raw)
+    # dictOfchans = {raw.info.ch_names[i]: EEG_CHAN_NAMES[i] for i in range(len(EEG_CHAN_NAMES))}
+    # mne.channels.rename_channels(raw.info, dictOfchans)
+    return apply_filters(raw)
+
+
 def laplacian(epochs):
     '''
 
@@ -45,6 +66,19 @@ def laplacian(epochs):
     return filtered_epochs
 
 def get_epochs(raw, trial_duration, ready_duration):
+    '''
+    epochs extraction from raw data
+
+    Parameters
+    ----------
+    raw
+    trial_duration
+    ready_duration
+
+    Returns
+    -------
+
+    '''
     events = mne.find_events(raw, EVENT_CHAN_NAME)
     event_dict = {'Right': 1, 'Left': 2, 'Idle': 3}
     epochs = mne.Epochs(raw, events, event_dict, -ready_duration,
@@ -53,11 +87,22 @@ def get_epochs(raw, trial_duration, ready_duration):
     return epochs
 
 def concatenate_epochs(recordings):
+    '''
+    concatanate epochs to one list.
+
+    Parameters
+    ----------
+    recordings
+
+    Returns
+    -------
+
+    '''
     epoch_list = []
     for path in recordings:
         raw = process_raw(path + "/raw.fif")
         epoch_list.append(get_epochs(raw, TRIAL_DUR, READY_DUR))
-        return mne.concatenate_epochs(epoch_list)
+    return mne.concatenate_epochs(epoch_list)
 
 def save_raw_and_epochs(subj, raw, filtered_recording, epochs, board_data):
     folder_path = create_session_folder(subj)
@@ -84,6 +129,8 @@ def set_reference_digitization(raw):
 def apply_filters(raw):
     raw.notch_filter(25)
     raw.filter(1, 40)
+    # raw.filter(7, 30)
+
     # raw = mne.preprocessing.compute_current_source_density(raw) # Laplacian
     # raw = perform_ICA(raw)
     return raw
@@ -119,7 +166,9 @@ def devide_to_labels(recording_path, apply_ica = False):
         if apply_ica:
             raw_csd = perform_ICA(raw_csd)
 
+        # changed to see ready duration
         epochs = get_epochs(raw_csd, TRIAL_DUR, READY_DUR).pick_channels(['C3', 'C4'])
+        # epochs = get_epochs_with_ready(raw_csd, TRIAL_DUR, READY_DUR).pick_channels(['C3', 'C4'])
         print(epochs)
         epochR = epochs['Right'].get_data()
         epochL = epochs['Left'].get_data()

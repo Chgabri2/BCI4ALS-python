@@ -1,12 +1,14 @@
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import ShuffleSplit, cross_val_score
-from mne.decoding import CSP
+from mne.decoding import CSP, UnsupervisedSpatialFilter
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from skopt import BayesSearchCV
 from skopt.space import Real, Integer
+from sklearn.decomposition import PCA
+from constants import *
 
 def create_grid():
 # Create the parameter grid based on the results of random search
@@ -31,7 +33,7 @@ def create_opt():
         {
             'bootstrap': [True, False],
             'max_depth': Integer(60, 100),
-            'max_features': Integer(1, 10),
+            'max_features': Integer(1, 8),
             'min_samples_leaf': Integer(1, 8),
             'min_samples_split': Integer(2, 12),
             'n_estimators': Integer(50, 500)
@@ -65,7 +67,7 @@ def create_classifier(features, labels, clf_type = 'lda'):
     lda.fit(features, labels)
     return clf, scores
 
-def create_CSP(epochs):
+def create_CSP(epochs, components = 8, two_classes = False):
     '''
 
     Parameters
@@ -76,22 +78,19 @@ def create_CSP(epochs):
     -------
 
     '''
-    scores = []
     labels = epochs.events[:,2]
-    epochs_data_train = epochs.get_data()
-    cv = ShuffleSplit(10, test_size=0.2, random_state=42)
-    cv_split = cv.split(epochs_data_train)
+    epochs_data_train = epochs.get_data()[:, :, FS*READY_DUR:]
+    cv = ShuffleSplit(4, test_size=0.2, random_state=42)
+    # cv_split = cv.split(epochs_data_train)
+
+    if two_classes: #delete right
+        epochs_data_train = epochs_data_train[labels != 3]
+        labels = labels[labels != 3]
 
     # Assemble a classifier
-    lda = LinearDiscriminantAnalysis()
-    csp = CSP(n_components=8)
+    csp = CSP(n_components=components, reg='ledoit_wolf', log=True, norm_trace=False, transform_into='average_power',
+              cov_est='epoch')
+    csp_features = Pipeline([('asd', UnsupervisedSpatialFilter(PCA(11), average=True)), ('asdd', csp)]).fit_transform(
+        epochs_data_train, labels)
 
-    # Use scikit-learn Pipeline with cross_val_score function
-    clf = Pipeline([('CSP', csp), ('LDA', lda)])
-    scores = cross_val_score(clf, epochs_data_train, labels, cv=cv, n_jobs=1)
-
-    # Printing the results
-    class_balance = np.mean(labels == labels[0])
-    class_balance = max(class_balance, 1. - class_balance)
-    print("Classification accuracy: %f / Chance level: %f" % (np.mean(scores),
-                                                              class_balance))
+    return csp_features, labels
