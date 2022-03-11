@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76c22756-8b34-421f-818e-22ed9b00033b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/draft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classification.py" beforeDir="false" afterPath="$PROJECT_DIR$/classification.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/features_extraction.py" beforeDir="false" afterPath="$PROJECT_DIR$/features_extraction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/raw_data_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/raw_data_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spectogram.py" beforeDir="false" afterPath="$PROJECT_DIR$/spectogram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization1.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +53,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.features_extraction">
+  <component name="RunManager" selected="Python.spectogram">
     <configuration name="draft" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BCI4ALS-python" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -151,11 +149,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.spectogram" />
         <item itemvalue="Python.features_extraction" />
+        <item itemvalue="Python.visualization1" />
         <item itemvalue="Python.draft" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.visualization1" />
-        <item itemvalue="Python.spectogram" />
       </list>
     </recent_temporary>
   </component>

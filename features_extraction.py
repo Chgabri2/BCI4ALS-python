@@ -1,4 +1,6 @@
 import os
+
+import matplotlib.pyplot as plt
 import numpy as np
 import mne
 from constants import *
@@ -9,6 +11,7 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 import classification as cl
 from scipy import stats
 
@@ -31,9 +34,16 @@ recordings_all = [RECORDINGS_DIR + "\\2022-02-28--11-25-18_Ori", RECORDINGS_DIR 
 #
 # # recordings_all = [RECORDINGS_DIR + "\\2022-02-27--20-41-05_David7", RECORDINGS_DIR + "\\2022-02-27--21-22-21_David7",
 # #               RECORDINGS_DIR + "\\2022-02-27--23-27-12_David7"]
-recordings_all = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
-              RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
+# recordings_all = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
+#               RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
 # reorder list randomly
+
+# recordings_all = [RECORDINGS_DIR + "\\2022-03-10--10-56-01_Ori", RECORDINGS_DIR + "\\2022-03-10--11-03-08_Ori",
+#               RECORDINGS_DIR + "\\2022-03-10--11-09-01_Ori",RECORDINGS_DIR + "\\2022-03-10--11-15-00_Ori",
+#                   RECORDINGS_DIR + "\\2022-03-10--11-21-23_Ori",  RECORDINGS_DIR + "\\2022-03-10--11-34-19_Ori",
+#                   RECORDINGS_DIR + "\\2022-03-10--11-40-02_Ori",  RECORDINGS_DIR + "\\2022-03-10--11-27-35_Ori"
+#                   ]
+# #
 
 
 def get_alpha_beta_overlap(data, window_size, stim_dur):
@@ -81,7 +91,8 @@ def get_features(fname):
     classes = data labels
 
     '''
-    raw = rda.process_raw(fname)
+    # raw = rda.process_raw(fname)
+    raw = rda.process_old_raw(fname)
     epochs = rda.get_epochs(raw, TRIAL_DUR, READY_DUR).crop(tmin=2)
     # band_power = get_alpha_beta(epochs.pick_channels(['C3', 'C4']))
     band_power = get_alpha_beta(epochs)
@@ -89,8 +100,12 @@ def get_features(fname):
     features = band_power
     return features, classes
 
-def confmat(true_class, pred_class, labels):
+def confmat(true_class, pred_class, labels, title):
     cnfsn_mat = confusion_matrix(true_class, pred_class, labels=labels)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cnfsn_mat)
+    disp.plot()
+    disp.ax_.set_title(title)
+    plt.savefig(title + '.png')
 
 
 order = np.random.permutation(len(recordings_all))
@@ -116,9 +131,9 @@ clf = LinearDiscriminantAnalysis()
 clf.fit(all_feature_train, all_classes_train)
 pred_train = clf.predict(all_feature_train)
 print(all_classes_train, pred_train)
-cnfsn_mat_train = confusion_matrix(all_classes_train, pred_train, labels=[1, 2, 3])
-ConfusionMatrixDisplay(confusion_matrix(all_classes_train, pred_train)).plot()
-print("on train", classification_report(pred_train, all_classes_train))
+# cnfsn_mat_train = confusion_matrix(all_classes_train, pred_train, labels=[1, 2, 3])
+# ConfusionMatrixDisplay(confusion_matrix(all_classes_train, pred_train)).plot()
+# print("on train", classification_report(pred_train, all_classes_train))
 
 # Test session
 all_feature_test = np.array([])
@@ -131,9 +146,9 @@ for path in recordings_test:
     all_classes_test = np.hstack([all_classes_test, classes]) if all_classes_test.size else classes
 
 pred_test = clf.predict(all_feature_test)
-print("on test", classification_report(pred_test, all_classes_test))
-cnfsn_mat_test = confusion_matrix(all_classes_test, pred_test, labels=[1, 2, 3])
-ConfusionMatrixDisplay(confusion_matrix(all_classes_test, pred_test)).plot()
+# print("on test", classification_report(pred_test, all_classes_test))
+# cnfsn_mat_test = confusion_matrix(all_classes_test, pred_test, labels=[1, 2, 3])
+# ConfusionMatrixDisplay(confusion_matrix(all_classes_test, pred_test)).plot()
 
 ## LDA cross validation
 clf1 = cl.create_classifier(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]))
@@ -160,8 +175,26 @@ print("val. score: %s" % opt.best_score_)
 ## CSP
 all_ep = rda.concatenate_epochs(recordings_all)
 features_csp, labels_csp = cl.create_CSP(all_ep)
+num_epochs = len(labels_csp)
+features_csp_train = features_csp[:int(num_epochs*2/3), :]
+features_csp_test = features_csp[int(num_epochs*2/3):, :]
+
+labels_csp_train = labels_csp[:int(num_epochs*2/3)]
+labels_csp_test = labels_csp[int(num_epochs*2/3):]
+
 opt_csp = cl.create_opt()
-clf_Bayes = opt_csp.fit(features_csp, labels_csp)
+clf_Bayes = opt_csp.fit(features_csp_train, labels_csp_train)
+
+pred_test_csp = clf_Bayes.predict(features_csp_test)
+confmat(pred_test_csp, labels_csp_test, [1, 2, 3], 'confusion matrix csp random forest bayesian hyper params')
+
+## CSP baysian gradient boost
+# clf_xgb = cl.create_classifier(np.vstack([all_feature_train, all_feature_test]), np.hstack([all_classes_train, all_classes_test]), 'xgb')
+clf_xgb = cl.create_classifier(all_feature_train, all_classes_train, 'xgb')
+pred_test = clf.predict(all_feature_test)
+confmat(all_classes_test, pred_test, [1, 2, 3], 'confusion matrix xbg')
+
+print(np.mean(clf_xgb[1]))
 
 ## CSP LDA
 clf3 = cl.create_classifier(features_csp, labels_csp)
@@ -179,3 +212,4 @@ print("Bayesian random forest val. score: %s" % opt.best_score_)
 print("Bayesian CSP random forest val. score: %s" % opt_csp.best_score_)
 print("Bayesian CSP 2 classes random forest val. score: %s" % clf_Bayes_2.best_score_)
 print("CSP LDA mean score: %s" % np.mean(clf3[1]))
+print("CSP gradient boost val. score: %s" % np.mean(clf_xgb[1]))

@@ -24,7 +24,9 @@ recordings = [RECORDINGS_DIR + "\\2022-03-08--13-50-17_OriMove", RECORDINGS_DIR 
               RECORDINGS_DIR + "\\2022-03-08--14-01-52_OriMove"]
 recordings = [RECORDINGS_DIR + "\\2022-03-08--13-25-30_Ori", RECORDINGS_DIR + "\\2022-03-08--13-31-06_Ori",
               RECORDINGS_DIR + "\\2022-03-08--13-37-02_Ori"]
-
+# recordings = [RECORDINGS_DIR + "\\2022-03-10--10-56-01_Ori", RECORDINGS_DIR + "\\2022-03-10--11-03-08_Ori",
+#               RECORDINGS_DIR + "\\2022-03-10--11-09-01_Ori",RECORDINGS_DIR + "\\2022-03-10--11-15-00_Ori",
+#                   RECORDINGS_DIR + "\\2022-03-10--11-21-23_Ori"]
 
 epochR, epochL, epochs_Idle = rda.devide_to_labels(recordings)
 
@@ -90,3 +92,4 @@ elecs = EEG_CHAN_NAMES[2:4]
 classes = [["left"], ["right"], ["Idle"]]
 create_psd(epochR, epochL,epochs_Idle, FS, window_size, overlap, freq)
 plt.show()
+plt.savefig('PSD.png')

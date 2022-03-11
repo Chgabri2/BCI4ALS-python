@@ -21,7 +21,7 @@ def process_old_raw(path):
 
     '''
     raw = mne.io.read_raw_fif(path, preload=True)
-    picks = list(range(len(EEG_CHAN_NAMES) - 1)) + [len(raw.ch_names) - 1]
+    picks = list(range(len(EEG_CHAN_NAMES))) + [len(raw.ch_names) - 1]
     raw.pick(picks)
     raw = set_reference_digitization(raw)
     dictOfchans = {raw.info.ch_names[i]: EEG_CHAN_NAMES[i] for i in range(len(EEG_CHAN_NAMES))}
@@ -131,8 +131,9 @@ def apply_filters(raw):
     raw.filter(1, 40)
     # raw.filter(7, 30)
 
-    # raw = mne.preprocessing.compute_current_source_density(raw) # Laplacian
     # raw = perform_ICA(raw)
+    # raw = mne.preprocessing.compute_current_source_density(raw) # Laplacian
+
     return raw
 
 def perform_ICA(raw):

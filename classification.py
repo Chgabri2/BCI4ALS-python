@@ -3,6 +3,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import ShuffleSplit, cross_val_score
 from mne.decoding import CSP, UnsupervisedSpatialFilter
 import numpy as np
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from skopt import BayesSearchCV
@@ -43,6 +44,19 @@ def create_opt():
     )
     return opt
 
+def create_opt_xgboost():
+    opt = BayesSearchCV(
+        GradientBoostingClassifier(),
+        {
+            'learning_rate' : Real(0.5, 1.5),
+            'bootstrap': [True, False],
+            'max_depth': Integer(1, 10)
+        },
+        n_iter=32,
+        cv=4
+    )
+    return opt
+
 def create_classifier(features, labels, clf_type = 'lda'):
     '''
 
@@ -50,7 +64,7 @@ def create_classifier(features, labels, clf_type = 'lda'):
     ----------
     features
     labels
-    clf_type
+    clf_type = LDA / Random forest / Gradient boost
 
     Returns
     -------
@@ -58,10 +72,13 @@ def create_classifier(features, labels, clf_type = 'lda'):
     '''
     lda = LinearDiscriminantAnalysis()
     rnf = RandomForestClassifier(n_estimators=20, max_depth=50)
+    xgb = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0)
     clf = Pipeline([('LDA', lda)])
 
     if clf_type == 'rnf':
         clf = Pipeline([('RNF', rnf)])
+    elif clf_type == 'xgb':
+        clf = Pipeline([('XGB', xgb)])
 
     scores = cross_val_score(clf, features, labels, cv=4)
     lda.fit(features, labels)
